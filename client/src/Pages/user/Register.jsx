@@ -141,10 +141,21 @@ export default function Register() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      console.log('Registration submitted:', formData);
-      alert('Registration successful! Check console for details.');
+ const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      alert("Please fill out all fields");
+      return;
+    }
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/register", formData);
+      console.log("✅ Registration successful:", res.data);
+      alert("Registration successful!");
+    } catch (err) {
+      console.error("❌ Registration failed:", err.response?.data || err.message);
+      alert(err.response?.data?.message || "Something went wrong");
     }
   };
 
